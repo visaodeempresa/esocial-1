@@ -1,0 +1,35 @@
+== RR
+
+=== Atividades Concluídas
+
+  * [ ] Implantação do Banco de dados
+  * [ ] Implantação de aplicação administrativa - web
+  * [ ] Implantação da aplicação administrativa - apoio
+  * [ ] Configuração de certificado
+  * [ ] Implantação do 'Conectividade'
+  * [ ] Implantação do 'Gerencial'.
+  * [ ] Teste de conexão com Serpro
+
+=== Mapeamento de ambiente
+Informações sobre o ambiente de Infraestrutura:
+IMPORTANT: Substitua o campo <versão> pelo valor correto.
+
+ * [ ] Docker:
+ * [ ] Docker-compose
+ * [ ] Kubernetes
+
+Bancos de dados
+
+ * [ ] Oracle - <versão> 
+
+Linguagens de programação
+
+ * [ ] Java - <versão>
+
+Servidor de aplicação
+
+ * [ ] Jboss - <versão>
+ * [ ] WildFly - <versão>
+
+
+=== Relatos
