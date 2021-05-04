@@ -1,0 +1,510 @@
+# OBS: EH NECESSARIO ATIVAR AS ESTATISTICAS NOS JBOSS.
+# JBOSS EAP 6: adicionar ao conf: JAVA_OPTS="$JAVA_OPTS -Dorg.apache.tomcat.util.ENABLE_MODELER=true" (Ref: https://access.redhat.com/solutions/180173)
+# JBOSS EAP 7: ativar varias estatisticas desejadas (Ref: https://www.ibm.com/support/knowledgecenter/en/SSHLNR_8.1.4/com.ibm.pm.doc/install/jboss_config_agent_prereq_enable_web_statistics_collection.htm)
+---
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+whitelistObjectNames: 
+  # Whitelist objects to be collected, for performance reason
+  # see https://github.com/prometheus/jmx_exporter/issues/246#issuecomment-367573931
+  # Each object in the rules below has to be added to whitelistObjectNames too !
+  # note that rules use regex (like "foo.*", whereas the whitelist use globbing expressions (like "foo*")
+  
+  # OBS: importancia do whitelist: https://github.com/prometheus/jmx_exporter/issues/246#issuecomment-367573931 (reduziu de 43s para 0.028s)
+ 
+  # Itens do exemplo do jmx_exporter: https://github.com/prometheus/jmx_exporter/blob/master/example_configs/wildfly-10.yaml
+  - "jboss.as:subsystem=messaging-activemq,server=*"
+  - "jboss.as:subsystem=messaging-activemq,server=*,jms-topic=*"
+  - "jboss.as:subsystem=messaging-activemq,server=*,jms-queue=*"
+  - "jboss.as:subsystem=datasources,data-source=*,statistics=*"
+  - "jboss.as:subsystem=datasources,xa-data-source=*,statistics=*"
+  - "jboss.as:subsystem=transactions*"
+  #- "jboss.as:subsystem=*,server=*,http-listener=*"
+
+  # Items do exemplo do blogspot: http://management-platform.blogspot.com/2017/09/prometheus-jmx-exporter-configuration.html
+  - "jboss.as:path=*"
+  - "jboss.as:deployment=*,subdeployment=*,subsystem=*"
+  - "jboss.as:deployment=*,subsystem=*"
+  - "jboss.as:deployment=*,subdeployment=*,subsystem=*,servlet=*"
+  - "jboss.as:deployment=*,subsystem=*,servlet=*"
+  - "jboss.as:deployment=*,subdeployment=*,subsystem=ejb3*"
+  - "jboss.as:deployment=*,subsystem=ejb3*"
+
+  # Adicoes do TRT18
+  - "java.lang:*"
+  - "jboss.modules:*"
+
+  # Jboss EAP 4, 5, 6
+  #- "jboss.as:subsystem=web,connector=*"
+
+  # Jboss EAP 7, Wildfly 11, 14
+  #- "jboss.as:subsystem=undertow,server=*,ajp-listener=*"
+  - "jboss.as:subsystem=undertow,server=*,https-listener=*"
+  - "jboss.as:subsystem=undertow,server=*,http-listener=*"
+
+  - "jboss.as:deployment=*,subsystem=*,endpoint=*"
+  #- "jboss.as:deployment=*,subsystem=ejb3,stateless-session-bean=*"
+  #- "jboss.as:deployment=*,subsystem=ejb3,stateful-session-bean=*"
+  #- "jboss.as:deployment=*,subsystem=ejb3,message-driven-bean=*"
+  #- "jboss.as:deployment=*,subsystem=ejb3,singleton-bean=*"
+  - "jboss.as:deployment=*"
+  - "jboss.web:type=ThreadPool,name=*"
+  - "org.xnio:type=Xnio,provider=*,worker=*,address=*"
+
+
+rules:
+
+# ===================================================================================================================
+
+  # EXEMPLOS DO JMX_EXPORTER: https://github.com/prometheus/jmx_exporter/blob/master/example_configs/wildfly-10.yaml
+
+# -------------------------------------------------------------------------------------------------------------------
+  
+  # MESSAGING (Exemplo do jmx_exporter nao usa type GAUGE, e nao guarda o label server)
+  # whitelist: - "jboss.as:subsystem=messaging-activemq,server=*"
+  - pattern: "^jboss.as<subsystem=messaging-activemq, server=.+, jms-(queue|topic)=(.+)><>(.+):"
+    attrNameSnakeCase: true
+    name: wildfly_messaging_$3
+    labels:
+      $1: $2
+
+#  # PARA O PJE: Adicionamos o label server
+#  - pattern: "^jboss.as<subsystem=messaging-activemq, server=(.+), jms-(queue|topic)=(.+)><>(.+):"
+#    attrNameSnakeCase: true
+#    name: wildfly_messaging_$4
+#    labels:
+#      $2: $3
+#      server: $1
+
+# -----------------------------------------------  
+
+  # OK DATASOURCES (Exemplo do jmx_exporter nao usa type GAUGE)  
+  # OBS: Adicionamos o label datasource
+  # whitelist: - "jboss.as:subsystem=datasources,data-source=*,statistics=*"
+  # whitelist: - "jboss.as:subsystem=datasources,xa-data-source=*,statistics=*"
+  - pattern: "^jboss.as<subsystem=datasources, (?:xa-)*data-source=(.+), statistics=(.+)><>(.+):"
+    attrNameSnakeCase: true
+    name: wildfly_datasource_$2_$3
+    labels:
+      name: $1
+
+  # PARA O PJE: Adicionamos o label datasource
+#  - pattern: "^jboss.as<subsystem=datasources, (?:xa-)*data-source=(.+), statistics=(.+)><>(.+):"
+#    attrNameSnakeCase: true
+#    name: wildfly_datasource_$2_$3
+#    labels:
+#      name: $1
+#  #   datasource: $1
+
+# -----------------------------------------------  
+  
+  # OK TRANSACTIONS (Exemplo do jmx_exporter nao usa type GAUGE)
+  # whitelist: - "jboss.as:subsystem=transactions*"
+  - pattern: "^jboss.as<subsystem=transactions><>number_of_(.+):"
+    attrNameSnakeCase: true
+    name: wildfly_transaction_$1
+
+# -----------------------------------------------  
+
+  # WEB SUBSYSTEM, LISTENERS (Exemplo do jmx_exporter; pega apenas o http-listener)
+  # PRECISAMOS: pegar outros listeners, e pegar subsystem=(web|undertow)
+  # whitelist: - "jboss.as:subsystem=*,server=*,http-listener=*"
+  #- pattern: "^jboss.as<subsystem=undertow, server=(.+), http-listener=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+  #  attrNameSnakeCase: true
+  #  name: wildfly_undertow_$3
+  #  labels:
+  #    server: $1
+  #    http_listener: $2
+    
+  # PARA O PJE: Ajustamos outro exemplo com mais informacoes, para unificarmos os listeners http, https e ajp, e os subsystems web e undertow.
+
+# ===================================================================================================================
+
+  # EXEMPLOS DO BLOGSPOT: http://management-platform.blogspot.com/2017/09/prometheus-jmx-exporter-configuration.html
+
+  # ITENS EM COMUM COM O EXEMPLO DO JMX_EXPORTER FICARAO COMENTADOS
+  
+# -------------------------------------------------------------------------------------------------------------------
+
+  # MESSAGING (Difere do exemplo do jmx_exporter por usar type GAUGE e guardar o label do server)
+  # whitelist: - "jboss.as:subsystem=messaging-activemq,server=*"
+  #- pattern: "^jboss.as<subsystem=messaging-activemq, server=(.+), jms-(queue|topic)=(.+)><>(.+):"
+  #  attrNameSnakeCase: true
+  #  name: wildfly_messaging_$4
+  #  type: GAUGE
+  #  labels:
+  #    server: $1
+  #    $2: $3
+
+# -----------------------------------------------  
+  
+  # DATASOURCES (Difere do exemplo do jmx_exporter por usar type GAUGE)
+  # whitelist: - "jboss.as:subsystem=datasources,data-source=*,statistics=*"
+  # whitelist: - "jboss.as:subsystem=datasources,xa-data-source=*,statistics=*"
+  #- pattern: "^jboss.as<subsystem=datasources, (?:xa-)*data-source=(.+), statistics=(.+)><>(.+):"
+  #  attrNameSnakeCase: true
+  #  name: wildfly_datasource_$2_$3
+  #  type: GAUGE
+  #  labels:
+  #    name: $1
+
+# -----------------------------------------------
+  
+  # TRANSACTIONS (Difere do exemplo do jmx_exporter por usar type GAUGE)
+  # whitelist: - "jboss.as:subsystem=transactions*"
+  #- pattern: "^jboss.as<subsystem=transactions><>number_of_(.+):"
+  #  attrNameSnakeCase: true
+  #  name: wildfly_transactions_$1
+  #  type: GAUGE  
+
+# -----------------------------------------------  
+  
+  # WEB SUBSYSTEM (Exemplo do segundo site; pega apenas http e https listeners; usa type GAUGE; guarda http ou https em protocol)
+  # podemos incluir o ajp-listener , para unificarmos a configuracao para Kubernetes ou máquinas virtuais que usem AJP.
+  # whitelist: - "jboss.as:subsystem=*,server=*,http-listener=*"
+  #- pattern: "^jboss.as<subsystem=undertow, server=(.+), (https?)-listener=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+  #  attrNameSnakeCase: true
+  #  name: wildfly_undertow_$4
+  #  type: GAUGE
+  #  labels:
+  #    server: $1
+  #    listener: $3
+  #    protocol: $2
+
+  # PARA O PJE: INCLUIR OS LISTENERS HTTP, HTTPS E AJP, E INCLUIR O SUBSYSTEM=WEB, DO JBOSS EAP 6, COM CONNECTOR NO LUGAR DE LISTENER
+
+  # obs: error_count é counter, e não gauge
+  # WEB SUBSYSTEM JBOSS 7
+  # whitelist: - "jboss.as:subsystem=*,server=*,http-listener=*"
+  # whitelist: - "jboss.as:subsystem=*,server=*,https-listener=*"
+  # whitelist: - "jboss.as:subsystem=*,server=*,ajp-listener=*"
+  - pattern: "^jboss.as<subsystem=undertow, server=(.+), (https?|ajp)-listener=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+    attrNameSnakeCase: true
+    name: wildfly_undertow_$4
+    labels:
+      server: $1
+      protocol: $2
+      connector: $2
+      listener: $3
+      subsystem: "undertow"
+
+  # WEB SUBSYSTEM JBOSS 6
+  # OBS: AO INVES DE PROTOCOL, NO JBOSS EAP 6, ajp E http SAO CHAMADOS DE connector; listener eh a mesma coisa que o protocol;
+  # adicionamos  server: default-server  para podermos unificar as consulta com o JBOSS EAP 7
+  # whitelist: - "jboss.as:subsystem=web,connector=*"
+#  - pattern: "^jboss.as<subsystem=web, connector=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+#    attrNameSnakeCase: true
+#    name: wildfly_undertow_$2
+#    labels:
+#      server: default-server
+#      listener: $1
+#      protocol: $1
+#      connector: $1
+
+  ##############
+  ### JBOSS 7 - UNDERTOW
+
+  # undertow existe a partir do JBOSS EAP 7.X
+#  - pattern: "^jboss.as<subsystem=undertow, server=(.+), http-listener=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+#    attrNameSnakeCase: true
+#    name: wildfly_undertow_$3
+#    labels:
+#      listener: $2
+#      server: $1
+#      connector: http
+#      subsystem: undertow
+
+  # undertow existe a partir do JBOSS EAP 7.X
+#  - pattern: "^jboss.as<subsystem=undertow, server=(.+), ajp-listener=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+#    attrNameSnakeCase: true
+#    name: wildfly_undertow_$3
+#    labels:
+#      listener: $2
+#      server: $1
+#      connector: ajp
+#      subsystem: undertow
+
+  # existe tambem o https-listener
+  # undertow existe a partir do JBOSS EAP 7.X
+#  - pattern: "^jboss.as<subsystem=undertow, server=(.+), https-listener=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+#    attrNameSnakeCase: true
+#    name: wildfly_undertow_$3
+#    labels:
+#      server: $1
+#      listener: https
+
+
+  ###
+  ##############
+
+  ##############
+  ### JBOSS 6
+
+  # jboss web existe nas versoes abaixo da 7.X (foi substituido pelo undertow)
+  # poderia pegar o max_time tambem
+
+  - pattern: "^jboss.as<subsystem=web, connector=(.+)><>(bytes_.+|error_count|processing_time|request_count):"
+    attrNameSnakeCase: true
+    name: wildfly_undertow_$2
+    labels:
+      listener: $1
+      server: "default-server"
+      connector: $1
+      subsystem: "web"
+
+  ###
+  ##############
+
+
+
+# -------------------------------------------------------------------------------------------------------------------
+
+  # CONTINUACAO DO EXEMPLO DO BLOGSPOT
+
+# -------------------------------------------------------------------------------------------------------------------
+
+  # CONFIG (Obs: sao metricas com valores estaticos)
+  # whitelist: - "jboss.as:path=*"
+  #- pattern: "^jboss.as<path=(.+)><>path:(.+)"
+  # attrNameSnakeCase: true
+  #  name: wildfly_config
+  #  labels:
+  #    $1: $2
+  #  value: 1
+
+# EXEMPLO DESSAS METRICAS:
+#wildfly_config{jboss_server_data_dir=" /srv/jboss/pje-1grau/data",} 1.0
+#wildfly_config{jboss_server_log_dir=" /srv/jboss/pje-1grau/log",} 1.0
+#wildfly_config{user_dir=" /opt/jmx_exporter",} 1.0
+#wildfly_config{jboss_server_base_dir=" /srv/jboss/pje-1grau",} 1.0
+#wildfly_config{jboss_server_config_dir=" /srv/jboss/pje-1grau/configuration",} 1.0
+#wildfly_config{java_home=" /usr/java/jdk1.8.0_181-amd64/jre",} 1.0
+#wildfly_config{jboss_server_temp_dir=" /srv/jboss/pje-1grau/tmp",} 1.0
+#wildfly_config{jboss_home_dir=" /srv/jboss",} 1.0
+#wildfly_config{user_home=" /root",} 1.0
+#wildfly_config{jboss_controller_temp_dir=" /srv/jboss/pje-1grau/tmp",} 1.0
+
+# -----------------------------------------------  
+
+  # DEPLOYMENTS (OBS: usa type GAUGE; pega apenas subsystem=undertow, MAS pje-legado usa subsystem=web; FALTA pegar |duplicated_session_ids )
+  # PRECISAMOS INCLUIR O subsystem=(web|undertow) para unificar JBOSS 6 e 7, e podemos pegar tb a metrica duplicated_session_ids .
+
+  # whitelist: - "jboss.as:deployment=*,subdeployment=*,subsystem=*"
+  # whitelist: - "jboss.as:deployment=*,subsystem=*"
+  
+  #- pattern: "^jboss.as<deployment=(.+), subdeployment=(.+), subsystem=undertow><>(.+_sessions|session_.+):"
+  #  attrNameSnakeCase: true
+  #  name: wildfly_deployment_$3
+  #  type: GAUGE
+  #  labels:
+  #    name: $1
+  #    subdeployment: $2
+
+  #- pattern: "^jboss.as<deployment=(.+), subsystem=undertow><>(.+_sessions|session_.+):"
+  #  attrNameSnakeCase: true
+  #  name: wildfly_deployment_$2
+  #  type: GAUGE
+  #  labels:
+  #    name: $1
+
+  # PARA O PJE: acrescentamos web|undertow, e o label subsystem; e o item duplicated_session_ids; e guardamos o subsystem)
+
+  - pattern: "^jboss.as<deployment=(.+), subdeployment=(.+), subsystem=(web|undertow)><>(.+_sessions|session_.+|duplicated_session_ids):"
+    attrNameSnakeCase: true
+    name: wildfly_deployment_$4
+    labels:
+      name: $1
+      subdeployment: $2
+      subsystem: $3
+
+  - pattern: "^jboss.as<deployment=(.+), subsystem=(web|undertow)><>(.+_sessions|session_.+|duplicated_session_ids):"
+    attrNameSnakeCase: true
+    name: wildfly_deployment_$3
+    labels:
+      name: $1
+      subsystem: $2
+
+# -----------------------------------------------  
+
+  # SERVLET (para unificarmos com o JBOSS EAP 6, precisamos incluir o subsystem=web)
+
+  #- pattern: "^jboss.as<deployment=(.+), subdeployment=(.+), subsystem=undertow, servlet=(.+)><>(.+_time|.+_count):"
+  #  attrNameSnakeCase: true
+  #  name: wildfly_servlet_$4
+  #  type: GAUGE
+  #  labels:
+  #    name: $3
+  #    deployment: $1
+  #    subdeployment: $2
+
+  #- pattern: "^jboss.as<deployment=(.+), subsystem=undertow, servlet=(.+)><>(.+_time|.+_count):"
+  #  attrNameSnakeCase: true
+  #  name: wildfly_servlet_$3
+  #  type: GAUGE
+  #  labels:
+  #    name: $2
+  #    deployment: $1
+
+  # PARA O PJE: incluir subsystem=web para o JBOSS EAP 6, e guardar o nome do subsystem.
+  
+  - pattern: "^jboss.as<deployment=(.+), subdeployment=(.+), subsystem=(web|undertow), servlet=(.+)><>(.+_time|.+_count):"
+    attrNameSnakeCase: true
+    name: wildfly_servlet_$5
+    labels:
+      name: $4
+      deployment: $1
+      subdeployment: $2
+      subsystem: $3
+
+  - pattern: "^jboss.as<deployment=(.+), subsystem=(web|undertow), servlet=(.+)><>(.+_time|.+_count):"
+    attrNameSnakeCase: true
+    name: wildfly_servlet_$4
+    labels:
+      name: $3
+      deployment: $1
+      subsystem: $2
+      
+# -----------------------------------------------  
+
+  # EJB (pega todos os atributos, mas de 16, 7 possuem valores de texto)
+
+#  - pattern: "^jboss.as<deployment=(.+), subdeployment=(.+), subsystem=ejb3, (stateless-session|stateful-session|message-driven|singleton)-bean=(.+)><>(.+):"
+#    attrNameSnakeCase: true
+#    name: wildfly_ejb_$5
+#    type: GAUGE
+#    labels:
+#      name: $4
+#      type: $3
+#      deployment: $1
+#      subdeployment: $2
+
+#  - pattern: "^jboss.as<deployment=(.+), subsystem=ejb3, (stateless-session|stateful-session|message-driven|singleton)-bean=(.+)><>(.+):"
+#    attrNameSnakeCase: true
+#    name: wildfly_ejb_$4
+#    type: GAUGE
+#    labels:
+#      name: $3
+#      type: $2
+#      deployment: $1
+
+  # PARA O PJE: indicar os itens que queremos capturar, pois sao apenas 7 de 16.
+
+  - pattern: "^jboss.as<deployment=(.+), subdeployment=(.+), subsystem=ejb3, (stateless-session|stateful-session|message-driven|singleton)-bean=(.+)><>(execution_time|invocations|peak_concurrent_invocations|pool_available_count|pool_create_count|pool_current_size|pool_max_size|pool_remove_count|wait_time):"
+    attrNameSnakeCase: true
+    name: wildfly_ejb_$5
+    type: GAUGE
+    labels:
+      name: $4
+      type: $3
+      deployment: $1
+      subdeployment: $2
+
+  - pattern: "^jboss.as<deployment=(.+), subsystem=ejb3, (stateless-session|stateful-session|message-driven|singleton)-bean=(.+)><>(execution_time|invocations|peak_concurrent_invocations|pool_available_count|pool_create_count|pool_current_size|pool_max_size|pool_remove_count|wait_time):"
+    attrNameSnakeCase: true
+    name: wildfly_ejb_$4
+    type: GAUGE
+    labels:
+      name: $3
+      type: $2
+      deployment: $1
+
+
+
+# ===================================================================================================================
+
+# INCLUSOES NO TRT18
+
+  # OPERATING SYSTEM
+  # USADO PELO DASHBOARD JMX OVERVIEW. NAO USA attrNameSnakeCase. No dashboard os atributos sao minusculos, emendados.
+  # DADOS DE MEMORIA, CPU, ETC.
+  # whitelist: - "java.lang:*"
+  - pattern: "^java.lang<type=OperatingSystem><>(.+):"
+    attrNameSnakeCase: false
+    name: java_lang_operatingsystem_$1
+
+  # MODULES LOADER
+  # whitelist: - "jboss.modules:*"
+  - pattern: "^jboss.modules<type=ModuleLoader, name=(.+)><>(.+):"
+    attrNameSnakeCase: true
+    name: wildfly_modules_loader_$2
+    labels:
+      name: $1
+
+  # THREAD POOL (AJP E HTTP) (JBOSS EAP 6)
+  # whitelist: - "jboss.web:type=ThreadPool,name=*"
+  #- pattern: "^jboss.web<type=threadpool, name=(.+)><>(.+thread.+):"
+  - pattern: "^jboss.web<type=ThreadPool, name=(.+)><>(.+):"
+    attrNameSnakeCase: true
+    #name: wildfly_threadpool_$2 # vamos tentar manter os nomes originais
+    name: jboss_web_threadpool_$2
+    labels:
+      name: $1
+
+  # THREAD POOL (AJP E HTTP) (JBOSS EAP 7)
+  # whitelist: - "org.xnio:type=Xnio,provider=*,worker=*,address=*"
+  - pattern: "^org.xnio<type=Xnio, provider=\"(.+)\", worker=\"(.+)\", address=\"(.+)\"><>(.+):"
+    attrNameSnakeCase: true
+    #name: wildfly_threadpool_$4 # vamos tentar manter os nomes originais
+    name: org_xnio_xnio_$4
+    labels:
+      provider: $1
+      worker: $2
+      address: $3
+
+  # DEPLOYMENTS WEBSERVICES ENDPOINT
+  # de 12 atributos, 7 sao numerais, por isso filtramos (.+_time|.+_count)
+  # poderiamos usar "name: $2" ao inves de "endpoint: $2"
+  # whitelist: - "jboss.as:deployment=*,subsystem=*,endpoint=*"
+  - pattern: "^jboss.as<deployment=(.+), subsystem=webservices, endpoint=(.+)><>(.+_time|.+_count):"
+    attrNameSnakeCase: true
+    name: wildfly_deployment_webservices_endpoint_$3
+    labels:
+      deployment: $1
+      endpoint: $2
+
+
+  # CONVERTER O STATUS DOS DEPLOYMENTS: OK=0, FAILED=1, STOPPED=2, *=3
+  # ref: https://www.robustperception.io/converting-string-states-to-booleans-with-the-jmx-exporter
+  # The current runtime status of a deployment. Possible status modes are OK, FAILED, and STOPPED. FAILED indicates a dependency is missing or a service could not start. STOPPED indicates that the deployment was not enabled or was manually stopped. (jboss.as<deployment=pje-consulta-api.war><>status)
+  - pattern: '^jboss.as<deployment=(.+)><>status: OK'
+    attrNameSnakeCase: true
+    name: wildfly_deployment_status
+    value: 0
+    labels:
+      deployment: $1
+  - pattern: '^jboss.as<deployment=(.+)><>status: FAILED'
+    attrNameSnakeCase: true
+    name: wildfly_deployment_status
+    value: 1
+    labels:
+      deployment: $1
+  - pattern: '^jboss.as<deployment=(.+)><>status: STOPPED'
+    attrNameSnakeCase: true
+    name: wildfly_deployment_status
+    value: 3
+    labels:
+      deployment: $1
+  - pattern: '^jboss.as<deployment=(.+)><>status: .*'
+    attrNameSnakeCase: true
+    name: wildfly_deployment_status
+    value: 4
+    labels:
+      deployment: $1
+
+  # CONVERTER O ENABLED DOS DEPLOYMENTS: true=0, *=1
+  # ref: https://www.robustperception.io/converting-string-states-to-booleans-with-the-jmx-exporter
+  # Boolean indicating whether the deployment content is currently deployed in the runtime (or should be deployed in the runtime the next time the server starts.) (jboss.as<deployment=pje-consulta-api.war><>enabled)
+  - pattern: '^jboss.as<deployment=(.+)><>enabled: true'
+    attrNameSnakeCase: true
+    name: wildfly_deployment_enabled
+    value: 0
+    labels:
+      deployment: $1
+  - pattern: '^jboss.as<deployment=(.+)><>enabled: .*'
+    attrNameSnakeCase: true
+    name: wildfly_deployment_enabled
+    value: 1
+    labels:
+      deployment: $1
+
+# ===================================================================================================================
