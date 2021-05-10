@@ -22,6 +22,7 @@ Altere o arquivo **env** com seus dados de conexão e addons.
 # - ENABLE_PROMETHEUS
 # - ENABLE_APM
 # - DB_HOST_GERAL
+# - DB_PORT
 # - DB_NAME_GERAL
 # - DB_USER_GERENCIAL
 # - DB_PASS_GERENCIAL

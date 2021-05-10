@@ -14,6 +14,5 @@ RUN apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && mkdir ${JBOSS_HOME} \
-  && adduser --home ${JBOSS_HOME} --shell /bin/sh --uid 1000 --disabled-password jboss \
-  && mkdir ${JBOSS_HOME}/staging && chown jboss ${JBOSS_HOME}/staging   
+  && mkdir ${JBOSS_HOME} ${JBOSS_HOME}/staging  \
+  && adduser --home ${JBOSS_HOME} --shell /bin/sh --uid 1000 --disabled-password jboss
