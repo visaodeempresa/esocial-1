@@ -30,6 +30,8 @@ ADDITIONS
 
 function set_elastic_apm() {
 
+echo "Configurando APM..."
+
     tee -a $CONF <<ADDITIONS
 
 # APM configuration
@@ -45,6 +47,8 @@ ADDITIONS
 
 function set_prometheus() {
 
+echo "Configurando Prometheus..."
+
     tee -a $CONF <<ADDITIONS
 
 # Prometheus configuration
@@ -58,6 +62,9 @@ ADDITIONS
 }
 
 function set_datasources(){
+    
+    echo "Configurando módulos e datasources, por favor aguardar..."
+
     bash -c "${STARTCMD} -bmanagement 127.0.0.1 &>/dev/null &"
     timeout=30
     until $($CLI -c "ls /deployment" &>/dev/null); do
@@ -75,13 +82,13 @@ function set_datasources(){
     $CLI -c "deploy drives/xdb6.jar"
     $CLI -c "deploy drives/xmlparserv2.jar"    
 
-    echo " Drives OK"
+    echo "Drives OK"
 
     #$CLI -c "xa-data-source add --name=Conectores-eSocial-Pool-XA --jndi-name=java:/conectores/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=ojdbc8-19.3.0.0.jar --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
     $CLI -c "xa-data-source add --name=Gerencial-eSocial-Pool-XA --jndi-name=java:/gerencial/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=ojdbc8-19.3.0.0.jar --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
     $CLI -c "xa-data-source add --name=Conectividade-eSocial-Pool-XA --jndi-name=java:/conectividade/esocial/XA-DS --user-name=${DB_USER_CONECTIVIDADE} --password=${DB_PASS_CONECTIVIDADE} --driver-name=ojdbc8-19.3.0.0.jar --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
 
-    echo " Datasources OK"
+    echo "Datasources OK"
 
     $CLI --connect ":shutdown"
 
