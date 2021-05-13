@@ -76,17 +76,14 @@ function set_datasources(){
         fi
     done
     
-    $CLI -c "deploy drives/ojdbc7-12.1.0.2.0.jar"
-    $CLI -c "deploy drives/ojdbc8-19.3.0.0.jar"
-    $CLI -c "deploy drives/postgresql-42.2.20.jre7.jar"    
+    $CLI -c "deploy drives/ojdbc7-12.1.0.2.0.jar"     
     $CLI -c "deploy drives/xdb6.jar"
     $CLI -c "deploy drives/xmlparserv2.jar"    
 
     echo "Drives OK"
 
-    #$CLI -c "xa-data-source add --name=Conectores-eSocial-Pool-XA --jndi-name=java:/conectores/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=ojdbc8-19.3.0.0.jar --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
-    $CLI -c "xa-data-source add --name=Gerencial-eSocial-Pool-XA --jndi-name=java:/gerencial/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=ojdbc8-19.3.0.0.jar --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
-    $CLI -c "xa-data-source add --name=Conectividade-eSocial-Pool-XA --jndi-name=java:/conectividade/esocial/XA-DS --user-name=${DB_USER_CONECTIVIDADE} --password=${DB_PASS_CONECTIVIDADE} --driver-name=ojdbc8-19.3.0.0.jar --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
+    $CLI -c "xa-data-source add --name=Gerencial-eSocial-Pool-XA --jndi-name=java:/gerencial/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=ojdbc7-12.1.0.2.0.jar --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
+    $CLI -c "xa-data-source add --name=Conectividade-eSocial-Pool-XA --jndi-name=java:/conectividade/esocial/XA-DS --user-name=${DB_USER_CONECTIVIDADE} --password=${DB_PASS_CONECTIVIDADE} --driver-name=ojdbc7-12.1.0.2.0.jar --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
 
     echo "Datasources OK"
 
