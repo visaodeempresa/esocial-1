@@ -9,7 +9,7 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 
 RUN apt-get update \
-  && apt-get install -y apt-utils curl openjdk-8-jre \
+  && apt-get install -y apt-utils curl openjdk-11-jre \
   && apt-get dist-upgrade -y  \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
