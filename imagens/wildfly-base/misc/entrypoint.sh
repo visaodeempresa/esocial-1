@@ -80,8 +80,8 @@ function set_datasources(){
     $CLI -c "/subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle)"
 
     echo "Drives OK"
-    #$CLI -c "xa-data-source add --name=Gerencial-eSocial-Pool-XA --jndi-name=java:/gerencial/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=oracle.jdbc.driver --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
-    #$CLI -c "xa-data-source add --name=Conectividade-eSocial-Pool-XA --jndi-name=java:/conectores/esocial/XA-DS --user-name=${DB_USER_CONECTIVIDADE} --password=${DB_PASS_CONECTIVIDADE} --driver-name=oracle.jdbc.driver --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
+    $CLI -c "xa-data-source add --name=Gerencial-eSocial-Pool-XA --jndi-name=java:/gerencial/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=oracle --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
+    $CLI -c "xa-data-source add --name=Conectividade-eSocial-Pool-XA --jndi-name=java:/conectores/esocial/XA-DS --user-name=${DB_USER_CONECTIVIDADE} --password=${DB_PASS_CONECTIVIDADE} --driver-name=oracle --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
 
     echo "Datasources OK"
 
