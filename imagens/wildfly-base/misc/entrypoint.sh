@@ -76,13 +76,12 @@ function set_datasources(){
         fi
     done
     
-    $CLI -c "module add --name=oracle.jdbc.driver --resources=drives/ojdbc7-12.1.0.2.0.jar,drives/xmlparserv2.jar,drives/xdb6.jar --resource-delimiter=, --dependencies=javax.api,javax.transaction.api"
-    #$CLI -c "/subsystem=datasources/jdbc-driver=ojdbc7:add(driver-name=ojdbc7,driver-module-name=com.oracle.ojdbc7)"
-    
+    #$CLI -c "module add --name=oracle.jdbc.driver --resources=drives/ojdbc7.jar,drives/xmlparserv2.jar,drives/xdb6.jar --resource-delimiter=, --dependencies=javax.api,javax.transaction.api"
+    $CLI -c "/subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle)"
+
     echo "Drives OK"
-:wq
-    $CLI -c "xa-data-source add --name=Gerencial-eSocial-Pool-XA --jndi-name=java:/gerencial/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=oracle.jdbc.driver --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
-    $CLI -c "xa-data-source add --name=Conectividade-eSocial-Pool-XA --jndi-name=java:/conectores/esocial/XA-DS --user-name=${DB_USER_CONECTIVIDADE} --password=${DB_PASS_CONECTIVIDADE} --driver-name=oracle.jdbc.driver --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
+    #$CLI -c "xa-data-source add --name=Gerencial-eSocial-Pool-XA --jndi-name=java:/gerencial/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=oracle.jdbc.driver --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
+    #$CLI -c "xa-data-source add --name=Conectividade-eSocial-Pool-XA --jndi-name=java:/conectores/esocial/XA-DS --user-name=${DB_USER_CONECTIVIDADE} --password=${DB_PASS_CONECTIVIDADE} --driver-name=oracle.jdbc.driver --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
 
     echo "Datasources OK"
 
