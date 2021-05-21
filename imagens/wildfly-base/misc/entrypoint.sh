@@ -75,9 +75,7 @@ function set_datasources(){
             break
         fi
     done
-    
-    #$CLI -c "module add --name=oracle.jdbc.driver --resources=drives/ojdbc7.jar,drives/xmlparserv2.jar,drives/xdb6.jar --resource-delimiter=, --dependencies=javax.api,javax.transaction.api"
-    
+       
     $CLI -c "/subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=oracle.jdbc.driver)"
 
     echo "Drives OK"
