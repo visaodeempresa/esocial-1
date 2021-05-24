@@ -15,7 +15,7 @@
 	Franklin St, Fifth Floor, Boston, MA ~ 02110-1301 USA, or see the FSF site: 
 	http://www.fsf.org. -->
 
-<module xmlns="urn:jboss:module:1.1" name="oracle.jdbc.driver">
+<module xmlns="urn:jboss:module:1.1" name="com.oracle">
 	<resources>
 		<resource-root path="ojdbc7-12.1.0.2.0.jar" />
 		<resource-root path="xdb6.jar" />
