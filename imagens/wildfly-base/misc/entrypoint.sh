@@ -76,7 +76,7 @@ function set_datasources(){
         fi
     done
        
-    $CLI -c "/subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle)"
+    $CLI -c "/subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle,driver-class-name=oracle.jdbc.driver.OracleDriver,xa-datasource-class=oracle.jdbc.pool.OracleDataSource,xa-datasource-class=oracle.jdbc.xa.client.OracleXADataSource)"
 
     echo "Drives OK"
     $CLI -c "xa-data-source add --name=Gerencial-eSocial-Pool-XA --jndi-name=java:/gerencial/esocial/XA-DS --user-name=${DB_USER_GERENCIAL} --password=${DB_PASS_GERENCIAL} --driver-name=oracle --xa-datasource-properties={"URL"=>"jdbc:oracle:thin:@${DB_HOST_GERAL}:${DB_PORT}:${DB_NAME_GERAL}"}"
