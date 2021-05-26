@@ -28,6 +28,6 @@ COPY --chown=jboss misc/entrypoint.sh       .
 RUN chmod +x entrypoint.sh
 
 # Expose the ports we're interested in
-EXPOSE 8080 9404
+EXPOSE 8080 9990 1234 9404
 
 ENTRYPOINT ["./entrypoint.sh"]

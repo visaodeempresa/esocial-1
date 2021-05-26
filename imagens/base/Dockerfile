@@ -12,7 +12,6 @@ RUN apt-get update \
   && apt-get install -y apt-utils curl openjdk-11-jre \
   && apt-get dist-upgrade -y  \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && mkdir ${JBOSS_HOME} ${JBOSS_HOME}/staging  \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \  
+  && mkdir -p ${JBOSS_HOME}/staging  \
   && adduser --home ${JBOSS_HOME} --shell /bin/sh --uid 1000 --disabled-password jboss
