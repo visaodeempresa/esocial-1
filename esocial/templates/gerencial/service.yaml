@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: esocial-gerencial-service
+  labels:
+    app: esocial-gerencial
+spec:
+  type: {{ .Values.gerencial.service.type }}
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: esocial-gerencial

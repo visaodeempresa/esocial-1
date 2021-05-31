@@ -1,0 +1,18 @@
+1. A aplicação foi implantada com sucesso, use a URL para acessar:
+{{- if .Values.gerencial.ingress.enabled }}
+  http{{ if $.Values.gerencial.ingress.tls }}s{{ end }}://{{ .Values.gerencial.ingress.host }}/  
+{{- else if contains "NodePort" .Values.gerencial.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services esocial-gerencial-service)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.gerencial.service.type }}
+     NOTA: Isso pode levar alguns minutos para que o IP do LoadBalancer fique disponível.
+           Para acomapnhar o status execute: 'kubectl get --namespace {{ .Release.Namespace }} svc -w esocial-gerencial-service'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} esocial-gerencial-service --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:8080
+{{- else if contains "ClusterIP" .Values.gerencial.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app=esocial-gerencial" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visite http://127.0.0.1:8080 para acessar a aplicação."
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
+{{- end }}

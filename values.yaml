@@ -1,0 +1,37 @@
+gerencial:
+  replicaCount: 1
+  image:
+    repository: gerencial
+    tag: latest
+  imagePullSecrets: []
+  #    - name: registry
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
+    tls: false
+    host: gerencial.tre-xx.gov.br
+  resources:
+    {}
+    # limits:
+    #   cpu: 1000m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 1000m
+    #   memory: 512Mi
+  autoscaling:
+    enabled: false
+  envs:
+    DB_HOST_GERAL: 10.x.x.x
+    DB_PORT: 1521
+    DB_NAME_GERAL: nome_do_banco_de_dados
+    DB_USER_GERENCIAL: gerencial
+    DB_PASS_GERENCIAL: gerencial_pass
+    DB_USER_CONECTIVIDADE: conectividade
+    DB_PASS_CONECTIVIDADE: conectividade_pass
+    # Wildfly Options
+    ENABLE_PROMETHEUS: false
+    ENABLE_APM: false
+    MEMORY_SIZE: 512M
+    JBOSS_ADMIN_USER: admin
+    JBOSS_ADMIN_PASS: admin1
