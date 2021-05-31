@@ -3,19 +3,16 @@ kind: ConfigMap
 metadata:
   name: esocial-gerencial-config
 data:
-# Informacoes APM  
-  APP_NAME: infodip-web
-  DB_HOST_GERAL: 10.x.x.x
-  DB_PORT: 1521
-  DB_NAME_GERAL: nome_do_banco_de_dados
-  DB_USER_GERENCIAL: gerencial
-  DB_PASS_GERENCIAL: gerencial_pass
-  DB_USER_CONECTIVIDADE: conectividade
-  DB_PASS_CONECTIVIDADE: conectividade_pass
-
+  DB_HOST_GERAL: "{{ .Values.gerencial.envs.DB_HOST_GERAL }}"
+  DB_PORT: "{{ .Values.gerencial.envs.DB_PORT }}"
+  DB_NAME_GERAL: "{{ .Values.gerencial.envs.DB_NAME_GERAL }}"
+  DB_USER_GERENCIAL: "{{ .Values.gerencial.envs.DB_USER_GERENCIAL }}"
+  DB_PASS_GERENCIAL: "{{ .Values.gerencial.envs.DB_PASS_GERENCIAL }}"
+  DB_USER_CONECTIVIDADE: "{{ .Values.gerencial.envs.DB_USER_CONECTIVIDADE }}"
+  DB_PASS_CONECTIVIDADE: "{{ .Values.gerencial.envs.DB_PASS_CONECTIVIDADE }}"
   # Wildfly Options
-  ENABLE_PROMETHEUS: false
-  ENABLE_APM: false
-  MEMORY_SIZE: 512M
-  JBOSS_ADMIN_USER: admin
-  JBOSS_ADMIN_PASS: admin1
+  ENABLE_PROMETHEUS: "{{ .Values.gerencial.envs.ENABLE_PROMETHEUS }}"
+  ENABLE_APM: "{{ .Values.gerencial.envs.ENABLE_APM }}"
+  MEMORY_SIZE: "{{ .Values.gerencial.envs.MEMORY_SIZE }}"
+  JBOSS_ADMIN_USER: "{{ .Values.gerencial.envs.JBOSS_ADMIN_USER }}"
+  JBOSS_ADMIN_PASS: "{{ .Values.gerencial.envs.JBOSS_ADMIN_PASS }}"
