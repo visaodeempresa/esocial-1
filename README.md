@@ -22,6 +22,8 @@ Altere o arquivo **env.ini** com seus dados de conexão e addons.
 # - APM_SERVER
 # - ENABLE_PROMETHEUS
 # - ENABLE_APM
+# - ENVIRONMENT
+# - APPLICATION
 # - DB_HOST_GERAL
 # - DB_PORT
 # - DB_NAME_GERAL

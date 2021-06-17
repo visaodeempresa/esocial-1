@@ -31,7 +31,11 @@ gerencial:
     DB_PASS_CONECTIVIDADE: conectividade_pass
     # Wildfly Options
     ENABLE_PROMETHEUS: false
-    ENABLE_APM: false
     MEMORY_SIZE: 512M
     JBOSS_ADMIN_USER: admin
     JBOSS_ADMIN_PASS: admin1
+    ENABLE_APM: false
+    #APM_PACKAGES: br.jus
+    #APM_SERVER: "10.x.x.x"
+    #APPLICATION: "esocial-gerencial"
+    #ENVIRONMENT: "homologacao"

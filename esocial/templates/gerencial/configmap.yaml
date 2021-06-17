@@ -11,8 +11,13 @@ data:
   DB_USER_CONECTIVIDADE: "{{ .Values.gerencial.envs.DB_USER_CONECTIVIDADE }}"
   DB_PASS_CONECTIVIDADE: "{{ .Values.gerencial.envs.DB_PASS_CONECTIVIDADE }}"
   # Wildfly Options
-  ENABLE_PROMETHEUS: "{{ .Values.gerencial.envs.ENABLE_PROMETHEUS }}"
-  ENABLE_APM: "{{ .Values.gerencial.envs.ENABLE_APM }}"
+  ENABLE_PROMETHEUS: "{{ .Values.gerencial.envs.ENABLE_PROMETHEUS }}"  
   MEMORY_SIZE: "{{ .Values.gerencial.envs.MEMORY_SIZE }}"
   JBOSS_ADMIN_USER: "{{ .Values.gerencial.envs.JBOSS_ADMIN_USER }}"
   JBOSS_ADMIN_PASS: "{{ .Values.gerencial.envs.JBOSS_ADMIN_PASS }}"
+  ENABLE_APM: "{{ .Values.gerencial.envs.ENABLE_APM }}"
+  {{- if .Values.gerencial.envs.ENABLE_APM }}  
+  APPLICATION: "{{ .Values.gerencial.envs.APPLICATION }}"
+  ENVIRONMENT: "{{ .Values.gerencial.envs.ENVIRONMENT }}"
+  APM_SERVER: "{{ .Values.gerencial.envs.APM_SERVER }}"
+  {{- end }}
