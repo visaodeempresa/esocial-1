@@ -1,0 +1,43 @@
+version: "3.8"
+services:  
+  backend: 
+    image: registry.tse.jus.br:5000/br/jus/tse/administrativa/esocial-backend:1.0.0.77
+    container_name: backend  
+    restart: unless-stopped  
+    env_file: env.ini
+    networks:
+      - internal-network
+    volumes:
+      - app:/opt/wildfly/cert
+  conectividade:    
+    image: registry.tse.jus.br:5000/tse/sesap/conectividade-esocial-servico-wildfly
+    container_name: conectividade
+    restart: unless-stopped
+    env_file: env.inip    
+    networks:
+      - internal-network
+    volumes:
+      - app:/opt/wildfly/cert
+  gerencial:    
+    image: registry.tse.jus.br:5000/tse/sesap/gerencial-esocial-je-wildfly
+    container_name: gerencial
+    restart: unless-stopped
+    env_file: env.ini
+    networks:
+      - internal-network    
+  frontend:
+    image: registry.tse.jus.br:5000/br/jus/tse/esocial-frontend:1.0.0-78
+    container_name: frontend
+    restart: unless-stopped
+    env_file: env.ini
+    ports:
+      - "8080:8080"
+    networks:
+      - internal-network    
+
+networks:
+  internal-network:   
+
+volumes:
+  app:
+  
