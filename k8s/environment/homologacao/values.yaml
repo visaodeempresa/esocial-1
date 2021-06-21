@@ -3,8 +3,7 @@ gerencial:
   image:
     repository: registry.tse.jus.br:5000/tse/sesap/gerencial-esocial-je-wildfly
     tag: latest
-  imagePullSecrets:
-    - name: registry
+  imagePullSecrets: {}
   service:
     type: ClusterIP
   resources:
@@ -32,8 +31,7 @@ backend:
   image:
     repository: registry.tse.jus.br:5000/br/jus/tse/administrativa/esocial-backend
     tag: 1.0.0.77
-  imagePullSecrets:
-    - name: registry
+  imagePullSecrets: {}
   service:
     type: ClusterIP
   resources:
@@ -80,8 +78,7 @@ conectividade:
   image:
     repository: registry.tse.jus.br:5000/tse/sesap/conectividade-esocial-servico-wildfly
     tag: latest
-  imagePullSecrets:
-    - name: registry
+  imagePullSecrets: {}
   service:
     type: ClusterIP
   resources:
