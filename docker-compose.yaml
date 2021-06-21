@@ -13,7 +13,7 @@ services:
     image: registry.tse.jus.br:5000/tse/sesap/conectividade-esocial-servico-wildfly
     container_name: conectividade
     restart: unless-stopped
-    env_file: env.inip    
+    env_file: env.ini   
     networks:
       - internal-network
     volumes:
