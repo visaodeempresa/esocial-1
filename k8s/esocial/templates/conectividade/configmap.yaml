@@ -6,5 +6,9 @@ data:
   CONECTIVIDADE_DS_URL: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_URL }}"
   CONECTIVIDADE_DS_USERNAME: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_USERNAME }}"
   CONECTIVIDADE_DS_PASSWORD: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_PASSWORD }}"
-  CONECTIVIDADE_DS_MAX_POOL: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_MAX_POOL }}"
-  CONECTIVIDADE_DS_MIN_POOL: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_MIN_POOL }}"
+  {{- with .Values.conectividade.envs.CONECTIVIDADE_DS_MAX_POOL }}
+    CONECTIVIDADE_DS_MAX_POOL: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_MAX_POOL }}"
+  {{- end }} 
+  {{- with .Values.conectividade.envs.CONECTIVIDADE_DS_MIN_POOL }}
+   CONECTIVIDADE_DS_MIN_POOL: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_MIN_POOL }}"
+  {{- end }}
