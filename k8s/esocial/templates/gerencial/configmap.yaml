@@ -17,8 +17,8 @@ data:
   GERENCIAL_DS_USERNAME: "{{ .Values.gerencial.envs.GERENCIAL_DS_USERNAME }}"
   GERENCIAL_DS_PASSWORD: "{{ .Values.gerencial.envs.GERENCIAL_DS_PASSWORD }}"
   {{- with .Values.gerencial.envs.GERENCIAL_DS_MAX_POOL }}
-    GERENCIAL_DS_MAX_POOL: "{{ .Values.gerencial.envs.GERENCIAL_DS_MAX_POOL }}"
+  GERENCIAL_DS_MAX_POOL: "{{ .Values.gerencial.envs.GERENCIAL_DS_MAX_POOL }}"
   {{- end }} 
   {{- with  .Values.gerencial.envs.GERENCIAL_DS_MIN_POOL }}
-    GERENCIAL_DS_MIN_POOL: "{{  .Values.gerencial.envs.GERENCIAL_DS_MIN_POOL }}"
+  GERENCIAL_DS_MIN_POOL: "{{  .Values.gerencial.envs.GERENCIAL_DS_MIN_POOL }}"
   {{- end }} 
