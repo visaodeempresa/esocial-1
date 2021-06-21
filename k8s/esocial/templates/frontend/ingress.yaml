@@ -1,0 +1,31 @@
+{{- if .Values.frontend.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name:  esocial-gerencial-ingress
+  annotations:     
+    nginx.ingress.kubernetes.io/affinity: "cookie"    
+    nginx.ingress.kubernetes.io/session-cookie-expires: "7200"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "7200"  
+    ingressclass.kubernetes.io/is-default-class: "true"
+    #nginx.ingress.kubernetes.io/app-root: /xxx
+  labels:
+    app: esocial-gerencial
+spec:
+  {{- if .Values.frontend.ingress.tls }}  
+  tls:      
+  - hosts:          
+      - {{ .Values.frontend.ingress.host }}      
+  {{- end }}
+  rules:
+  - host: {{ .Values.frontend.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:        
+          service:
+            name: "esocial-frontend-service"
+            port: 
+              number: 8080
+  {{- end }}

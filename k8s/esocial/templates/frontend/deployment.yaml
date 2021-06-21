@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esocial-frontend
+  labels:
+    app: esocial-frontend
+spec:
+  {{- if not .Values.frontend.autoscaling.enabled }}
+  replicas: {{ .Values.frontend.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: esocial-frontend
+  template:
+    metadata:      
+      labels:
+        app: esocial-frontend
+    spec:
+      {{- with .Values.frontend.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}     
+      containers:
+        - name: esocial-frontend  
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          envFrom:
+          - configMapRef: 
+              name: esocial-frontend-config
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:              
+              port: http
+            initialDelaySeconds: 240
+          readinessProbe:
+            tcpSocket:              
+              port: http
+            initialDelaySeconds: 45
+          resources:
+            {{- toYaml .Values.frontend.resources | nindent 12 }}

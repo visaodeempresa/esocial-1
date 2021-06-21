@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esocial-conectividade
+  labels:
+    app: esocial-conectividade
+spec:
+  {{- if not .Values.conectividade.autoscaling.enabled }}
+  replicas: {{ .Values.conectividade.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: esocial-conectividade
+  template:
+    metadata:      
+      labels:
+        app: esocial-conectividade
+    spec:
+      {{- with .Values.conectividade.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}     
+      containers:
+        - name: esocial-conectividade  
+          image: "{{ .Values.conectividade.image.repository }}:{{ .Values.conectividade.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          envFrom:
+          - configMapRef: 
+              name: esocial-conectividade-config
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:              
+              port: http
+            initialDelaySeconds: 240
+          readinessProbe:
+            tcpSocket:              
+              port: http
+            initialDelaySeconds: 45
+          resources:
+            {{- toYaml .Values.conectividade.resources | nindent 12 }}

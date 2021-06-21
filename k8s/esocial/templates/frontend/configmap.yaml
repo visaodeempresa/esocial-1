@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: esocial-frontend-config
+data:
+  PROFILE: "{{ .Values.frontend.envs.PROFILE }}"
+  KEYCLOAK_AUTH_SERVER_URL: "{{ .Values.frontend.envs.KEYCLOAK_AUTH_SERVER_URL }}"
+  URL_BACKEND: "{{ .Values.frontend.envs.URL_BACKEND }}"

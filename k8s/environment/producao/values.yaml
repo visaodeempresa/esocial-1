@@ -1,0 +1,102 @@
+gerencial:
+  replicaCount: 1
+  image:
+    repository: registry.tse.jus.br:5000/tse/sesap/gerencial-esocial-je-wildfly
+    tag: latest
+  imagePullSecrets:
+    - name: registry
+  service:
+    type: ClusterIP
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 200m
+      memory: 1Gi
+  autoscaling:
+    enabled: false
+  envs:
+    CONECTORES_DS_URL: jdbc:oracle:thin:@DB_HOST:1521/DB_NAME
+    CONECTORES_DS_USERNAME: DB_USER
+    CONECTORES_DS_PASSWORD: DB_PASS
+    #CONECTORES_DS_MAX_POOL: 5
+    #CONECTORES_DS_MIN_POOL: 1
+    GERENCIAL_DS_URL: jdbc:oracle:thin:@DB_HOST:1521/DB_NAME
+    GERENCIAL_DS_USERNAME: DB_USER
+    GERENCIAL_DS_PASSWORD: DB_PASS
+    #GERENCIAL_DS_MAX_POOL: 5
+    #GERENCIAL_DS_MIN_POOL: 1
+backend:
+  replicaCount: 1
+  image:
+    repository: registry.tse.jus.br:5000/br/jus/tse/administrativa/esocial-backend
+    tag: 1.0.0.77
+  imagePullSecrets:
+    - name: registry
+  service:
+    type: ClusterIP
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 200m
+      memory: 1Gi
+  autoscaling:
+    enabled: false
+  envs:
+    DB_URL: jdbc:oracle:thin:@DB_HOST:1521/DB_NAME
+    DB_USER: DB_USER
+    DB_PASS: DB_PASS
+    #DB_MAXIMUM_POOL_SIZE: 5
+frontend:
+  replicaCount: 1
+  image:
+    repository: registry.tse.jus.br:5000/br/jus/tse/esocial-frontend
+    tag: 1.0.0-78
+  imagePullSecrets:
+    - name: registry
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    tls: true
+    host: gerencial.tre-mg.gov.br
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+  autoscaling:
+    enabled: false
+  envs:
+    PROFILE: prod
+    KEYCLOAK_AUTH_SERVER_URL: https://login.tse.jus.br/auth
+    URL_BACKEND: esocial-backend-service
+conectividade:
+  replicaCount: 1
+  image:
+    repository: registry.tse.jus.br:5000/tse/sesap/conectividade-esocial-servico-wildfly
+    tag: latest
+  imagePullSecrets:
+    - name: registry
+  service:
+    type: ClusterIP
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 200m
+      memory: 1Gi
+  autoscaling:
+    enabled: false
+  envs:
+    CONECTIVIDADE_DS_URL: jdbc:oracle:thin:@DB_HOST:1521/DB_NAME
+    CONECTIVIDADE_DS_USERNAME: DB_USER
+    CONECTIVIDADE_DS_PASSWORD: DB_PASS
+    #CONECTIVIDADE_DS_MAX_POOL: 5
+    #CONECTIVIDADE_DS_MIN_POOL: 1

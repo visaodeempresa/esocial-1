@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: esocial-backend-service
+  labels:
+    app: esocial-backend
+spec:
+  type: {{ .Values.backend.service.type }}
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: esocial-backend

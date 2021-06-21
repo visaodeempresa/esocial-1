@@ -44,9 +44,16 @@ Altere o arquivo **values.yaml** com seus dados de conexão e configurações do
   docker-compose up -d
 ```
 
+# Rodar Helm Test
+
+```shell
+export ENVIRONMENT=[homologacao|producao]
+helm lint -f ./k8s/environment/${ENVIRONMENT}/values.yaml ./k8s/esocial/
+```
+
 # Rodar Aplicação com Helm
 
 ```shell
-  helm install eSocial -n esocial -f ./environment/homologacao/values.yaml ./esocial/ 
-  helm install eSocial -n esocial -f ./environment/producao/values.yaml ./esocial/ 
+  export ENVIRONMENT=[homologacao|producao]
+  helm upgrade -i esocial-gerencial -n esocial -f ./k8s/environment/${ENVIRONMENT}/values.yaml ./k8s/esocial/  
 ```

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: esocial
+description: Helm Chart para a instalação do E-Social
+type: application
+version: "1.0"
+appVersion: "1.0"

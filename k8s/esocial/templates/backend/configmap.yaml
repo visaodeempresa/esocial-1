@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: esocial-backend-config
+data:
+  DB_URL: "{{ .Values.backend.envs.DB_URL }}"
+  DB_USER: "{{ .Values.backend.envs.DB_USER }}"
+  DB_PASS: "{{ .Values.backend.envs.DB_PASS }}"
+  DB_MAXIMUM_POOL_SIZE: "{{ .Values.backend.envs.DB_MAXIMUM_POOL_SIZE }}"
