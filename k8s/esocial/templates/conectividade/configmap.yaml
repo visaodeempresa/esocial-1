@@ -3,12 +3,17 @@ kind: ConfigMap
 metadata:
   name: esocial-conectividade-config
 data:
-  CONECTIVIDADE_DS_URL: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_URL }}"
-  CONECTIVIDADE_DS_USERNAME: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_USERNAME }}"
-  CONECTIVIDADE_DS_PASSWORD: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_PASSWORD }}"
-  {{- with .Values.conectividade.envs.CONECTIVIDADE_DS_MAX_POOL }}
-    CONECTIVIDADE_DS_MAX_POOL: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_MAX_POOL }}"
-  {{- end }} 
-  {{- with .Values.conectividade.envs.CONECTIVIDADE_DS_MIN_POOL }}
-   CONECTIVIDADE_DS_MIN_POOL: "{{ .Values.conectividade.envs.CONECTIVIDADE_DS_MIN_POOL }}"
-  {{- end }}
+{{- with .Values.conectividade.envs }}
+  CONECTIVIDADE_DS_URL: "{{ .CONECTIVIDADE_DS_URL }}"
+  CONECTIVIDADE_DS_USERNAME: "{{ .CONECTIVIDADE_DS_USERNAME }}"
+  CONECTIVIDADE_DS_PASSWORD: "{{ .CONECTIVIDADE_DS_PASSWORD }}"
+{{ if .CONECTIVIDADE_DS_MAX_POOL }}
+  CONECTIVIDADE_DS_MAX_POOL: "{{ .CONECTIVIDADE_DS_MAX_POOL }}"
+{{- end }}
+{{ if .CONECTIVIDADE_DS_MIN_POOL }}
+  CONECTIVIDADE_DS_MIN_POOL: "{{ .CONECTIVIDADE_DS_MIN_POOL }}"
+{{- end }}
+{{ if .MEMORIA }}
+  MEMORIA: "{{ .MEMORIA }}"
+{{- end }}
+{{- end }}

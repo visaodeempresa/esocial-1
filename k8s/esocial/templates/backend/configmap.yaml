@@ -3,9 +3,13 @@ kind: ConfigMap
 metadata:
   name: esocial-backend-config
 data:
-  DB_URL: "{{ .Values.backend.envs.DB_URL }}"
-  DB_USER: "{{ .Values.backend.envs.DB_USER }}"
-  DB_PASS: "{{ .Values.backend.envs.DB_PASS }}"
-   {{- with .Values.backend.envs.DB_MAXIMUM_POOL_SIZE }}
-    DB_MAXIMUM_POOL_SIZE: "{{ .Values.backend.envs.DB_MAXIMUM_POOL_SIZE }}"
-  {{- end }}  
+{{- with .Values.backend.envs }}
+  DB_URL: "{{ .DB_URL }}"
+  DB_USER: "{{ .DB_USER }}"
+  DB_PASS: "{{ .DB_PASS }}"
+  GELF_APPENDER: "{{ .GELF_APPENDER }}"
+{{ if .DB_MAXIMUM_POOL_SIZE }}
+  DB_MAXIMUM_POOL_SIZE: "{{ .DB_MAXIMUM_POOL_SIZE }}"
+{{- end }}  
+{{- end }}
+  
