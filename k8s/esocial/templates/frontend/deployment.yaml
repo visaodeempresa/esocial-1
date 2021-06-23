@@ -16,10 +16,10 @@ spec:
       labels:
         app: esocial-frontend
     spec:
-      {{- with .Values.frontend.imagePullSecrets }}
+      {{ if .Values.imagePullSecrets.enabled }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}     
+        - name: {{ .Values.imagePullSecrets.name }}
+      {{- end }}    
       containers:
         - name: esocial-frontend  
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"

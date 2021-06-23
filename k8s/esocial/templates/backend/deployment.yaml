@@ -16,17 +16,19 @@ spec:
       labels:
         app: esocial-backend
     spec:
-      {{- with .Values.backend.imagePullSecrets }}
+      {{ if .Values.imagePullSecrets.enabled }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}     
+        - name: {{ .Values.imagePullSecrets.name }}
+      {{- end }}
       containers:
         - name: esocial-backend  
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           envFrom:
           - configMapRef: 
-              name: esocial-backend-config
+              name: esocial-backend-config          
+          - secretRef:
+              name: secret-backend
           ports:
             - name: http
               containerPort: 8080

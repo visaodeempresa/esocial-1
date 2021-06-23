@@ -5,8 +5,7 @@ metadata:
 data:
 {{- with .Values.backend.envs }}
   DB_URL: "{{ .DB_URL }}"
-  DB_USER: "{{ .DB_USER }}"
-  DB_PASS: "{{ .DB_PASS }}"
+  DB_USER: "{{ .DB_USER }}"  
   GELF_APPENDER: "{{ .GELF_APPENDER }}"
 {{ if .DB_MAXIMUM_POOL_SIZE }}
   DB_MAXIMUM_POOL_SIZE: "{{ .DB_MAXIMUM_POOL_SIZE }}"

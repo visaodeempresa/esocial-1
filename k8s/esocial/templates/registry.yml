@@ -1,0 +1,11 @@
+{{- with .Values.imagePullSecrets }}
+{{ if .enabled }} 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .name }}
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: {{ .secret }}
+{{- end }}  
+{{- end }}  

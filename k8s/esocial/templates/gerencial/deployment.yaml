@@ -16,10 +16,10 @@ spec:
       labels:
         app: esocial-gerencial
     spec:
-      {{- with .Values.gerencial.imagePullSecrets }}
+      {{ if .Values.imagePullSecrets.enabled }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}     
+        - name: {{ .Values.imagePullSecrets.name }}
+      {{- end }}    
       containers:
         - name: esocial-gerencial  
           image: "{{ .Values.gerencial.image.repository }}:{{ .Values.gerencial.image.tag | default .Chart.AppVersion }}"
@@ -27,6 +27,8 @@ spec:
           envFrom:
           - configMapRef: 
               name: esocial-gerencial-config
+          - secretRef:
+              name: secret-gerencial
           ports:
             - name: http
               containerPort: 8080
