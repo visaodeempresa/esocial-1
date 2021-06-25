@@ -1,6 +1,19 @@
 # esocial
 Acompanhamento do eSocial.
 
+## Configuração dos Repositórios
+
+É nessário adiconar o repositório do TSE como insecure-registries em cada um dos nodes que a aplicação irá rodar.
+
+```shell
+
+#para RedHat-like
+/etc/docker/daemon.json
+{
+  "insecure-registries": ["registry.tse.jus.br:5000"]
+}
+
+```
 ## Para uso via Docker
 Altere o arquivo **env.ini** com seus dados de conexão e addons. 
 
