@@ -63,7 +63,7 @@ frontend:
   ingress:
     enabled: true
     tls: true
-    host: gerencial.tre-mg.gov.br
+    host: xxxx.tre-xx.gov.br
   resources:
     limits:
       cpu: 1000m
