@@ -8,23 +8,23 @@ Altere o arquivo **env.ini** com seus dados de conexão e addons.
 Altere o arquivo **./k8s/environment/{homologacao|producao}/values.yaml** com seus dados de conexão e configurações do k8s. 
 
 # Docker
-## Rodar Aplicação com Docker Compose
+### Rodar Aplicação com Docker Compose
 
 ```shell
   docker-compose up -d
 ```
 
-## Listar Containers em execução
+### Listar Containers em execução
 ```shell
   docker-compose ps
 ```
 
-## Checar logs
+### Checar logs
 ```shell
   docker-compose logs
 ```
 
-## Parar Aplicação
+### Parar Aplicação
 ```shell
   docker-compose down
 ```
