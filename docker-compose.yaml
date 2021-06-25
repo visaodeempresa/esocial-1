@@ -6,9 +6,7 @@ services:
     restart: unless-stopped  
     env_file: env.ini
     networks:
-      - internal-network
-    volumes:
-      - app:/opt/wildfly/cert
+      - internal-network    
   conectividade:    
     image: registry.tse.jus.br:5000/tse/sesap/conectividade-esocial-servico-wildfly
     container_name: conectividade
@@ -16,8 +14,8 @@ services:
     env_file: env.ini   
     networks:
       - internal-network
-    volumes:
-      - app:/opt/wildfly/cert
+#    volumes:
+#      - <path_certificado>/project.ini:/opt/appsrv/esocial/tse/
   gerencial:    
     image: registry.tse.jus.br:5000/tse/sesap/gerencial-esocial-je-wildfly
     container_name: gerencial
@@ -33,11 +31,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - internal-network    
+      - internal-network
 
 networks:
   internal-network:   
-
-volumes:
-  app:
-  

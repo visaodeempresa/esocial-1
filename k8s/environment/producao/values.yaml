@@ -12,7 +12,7 @@ gerencial:
   resources:
     limits:
       cpu: 1000m
-      memory: 2Gi
+      memory: 4500Mi
     requests:
       cpu: 500m
       memory: 4500Mi
@@ -40,10 +40,10 @@ backend:
   resources:
     limits:
       cpu: 1000m
-      memory: 2Gi
+      memory: 1500Gi
     requests:
       cpu: 200m
-      memory: 1Gi
+      memory: 1500Mi
   autoscaling:
     enabled: false
   envs:
@@ -52,6 +52,7 @@ backend:
     DB_PASS: DB_PASS
     #DB_MAXIMUM_POOL_SIZE: 20
     GELF_APPENDER: gelfDisable
+    MEMORIA: 1g
 frontend:
   replicaCount: 1
   image:
@@ -99,3 +100,8 @@ conectividade:
     CONECTIVIDADE_DS_MAX_POOL: 100
     CONECTIVIDADE_DS_MIN_POOL: 100
     MEMORIA: 4g
+    #CERT_PASSWORD: XXXX
+  certificate:
+    enabled: false
+    secret_name: cert-secret
+    cert_path: /opt/appsrv/esocial/tse/

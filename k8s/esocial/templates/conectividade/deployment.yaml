@@ -33,6 +33,12 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          {{ if .Values.conectividade.certificate.enabled }}
+          volumeMounts:
+            - mountPath: {{ .Values.conectividade.certificate.cert_path }}
+              name: {{ .Values.conectividade.certificate.secret_name }}
+              readOnly: true
+          {{- end }} 
           livenessProbe:
             tcpSocket:              
               port: http
@@ -43,3 +49,9 @@ spec:
             initialDelaySeconds: 45
           resources:
             {{- toYaml .Values.conectividade.resources | nindent 12 }}
+      {{ if .Values.conectividade.certificate.enabled }}
+      volumes:
+      - name: {{ .Values.conectividade.certificate.secret_name }}
+        secret:
+          secretName: {{ .Values.conectividade.certificate.secret_name }}          
+      {{- end }} 

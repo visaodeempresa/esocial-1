@@ -55,5 +55,6 @@ helm lint -f ./k8s/environment/${ENVIRONMENT}/values.yaml ./k8s/esocial/
 
 ```shell
   export ENVIRONMENT=[homologacao|producao]
+  kubectl create secret generic cert-secret --from-file ./k8s/environment/${ENVIRONMENT}/project.ini
   helm upgrade -i esocial-gerencial -n esocial -f ./k8s/environment/${ENVIRONMENT}/values.yaml ./k8s/esocial/  
 ```
