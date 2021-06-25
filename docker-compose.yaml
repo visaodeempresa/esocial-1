@@ -17,7 +17,7 @@ services:
 #    volumes:
 #      - <path_certificado>/project.ini:/opt/appsrv/esocial/tse/
   gerencial:    
-    image: registry.tse.jus.br:5000/tse/sesap/gerencial-esocial-je-wildfly
+    image: registry.tse.jus.br:5000/tse/sesap/gerencial-esocial-je-wildfly:1.0.1.95
     container_name: gerencial
     restart: unless-stopped
     env_file: env.ini
