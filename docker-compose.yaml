@@ -8,7 +8,7 @@ services:
     networks:
       - internal-network    
   conectividade:    
-    image: registry.tse.jus.br:5000/tse/sesap/conectividade-esocial-servico-wildfly
+    image: registry.tse.jus.br:5000/tse/sesap/conectividade-esocial-servico-wildfly:1.0.1.50
     container_name: conectividade
     restart: unless-stopped
     env_file: env.ini   
