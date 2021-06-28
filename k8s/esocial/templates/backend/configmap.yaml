@@ -7,8 +7,12 @@ data:
   DB_URL: "{{ .DB_URL }}"
   DB_USER: "{{ .DB_USER }}"  
   GELF_APPENDER: "{{ .GELF_APPENDER }}"
+  PROFILE: "{{ .PROFILE }}"
 {{ if .DB_MAXIMUM_POOL_SIZE }}
   DB_MAXIMUM_POOL_SIZE: "{{ .DB_MAXIMUM_POOL_SIZE }}"
 {{- end }}  
+{{ if .MEMORIA }}
+  MEMORIA: "{{ .MEMORIA }}"
+{{- end }}
 {{- end }}
   

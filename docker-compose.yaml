@@ -1,7 +1,7 @@
 version: "3.8"
 services:  
   backend: 
-    image: registry.tse.jus.br:5000/br/jus/tse/administrativa/esocial-backend:1.0.0.78
+    image: registry.tse.jus.br:5000/br/jus/tse/administrativa/esocial-backend:1.0.0.79
     container_name: backend  
     restart: unless-stopped  
     env_file: env.ini
