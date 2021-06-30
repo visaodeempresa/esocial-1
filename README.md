@@ -14,13 +14,12 @@ Acompanhamento do eSocial.
 }
 
 ```
-## Para uso via Docker
-Altere o arquivo **env.ini** com seus dados de conexão e addons. 
-
-## Para uso via Helm
-Altere o arquivo **./k8s/environment/{homologacao|producao}/values.yaml** com seus dados de conexão e configurações do k8s. 
 
 # Docker
+
+### Para uso via Docker
+Altere o arquivo **env.ini** com seus dados de conexão e addons. 
+
 ### Rodar Aplicação com Docker Compose
 
 ```shell
@@ -51,22 +50,42 @@ kubectl create namespace esocial-producao
 ```
 A criação dos namespaces só é necessária uma única vez.
 
-## Rodar Helm Test
+## Helm
+
+### Para uso via Helm
+Altere o arquivo **./k8s/environment/{homologacao|producao}/values.yaml** com seus dados de conexão e configurações do k8s. 
+
+### Rodar Helm Test
 
 ```shell
 export ENVIRONMENT=[homologacao|producao]
 helm lint -f ./k8s/environment/${ENVIRONMENT}/values.yaml ./k8s/esocial/
 ```
-
-# Rodar Aplicação com Helm
+### Criação do certificado via secret (Quando diponível)
 
 ```shell
   export ENVIRONMENT=[homologacao|producao]
-  kubectl -n esocial-${ENVIRONMENT} create secret generic cert-secret --from-file ./k8s/environment/${ENVIRONMENT}/project.ini
+  kubectl -n esocial-${ENVIRONMENT} create secret generic cert-secret --from-file ./k8s/environment/${ENVIRONMENT}/project.ini  
+```
+* Manter o nome certificado **project.ini**. A aplicaçã
+o espera por esse nome.
+* Atualizar o arquivo **values.yaml** com os valores correpondentes:
+
+```yaml
+certificate:
+    enabled: true
+    secret_name: cert-secret
+    cert_path: /opt/appsrv/esocial/tse/
+```
+
+### Instalar ou Atualizar via Helm
+
+```shell
+  export ENVIRONMENT=[homologacao|producao]  
   helm upgrade -i esocial-${ENVIRONMENT} -n esocial-${ENVIRONMENT} -f ./k8s/environment/${ENVIRONMENT}/values.yaml ./k8s/esocial/
 ```
 
-## OPCIONAL: "Amarrando" os namespaces automaticamente em nodes específicos
+### OPCIONAL: "Amarrando" os namespaces automaticamente em nodes específicos
 Para que essas configurações desse tópico funcionem, o seu cluster kubernetes tem que suportar o admission plugin `PodNodeSelector`. Para verificar, execute o seguinte comando em um node master:
 ```shell
 docker inspect kube-apiserver |  grep enable-admission-plugins
