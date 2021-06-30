@@ -104,7 +104,7 @@ kubectl label nodes k8s-worker2 infra=prod
 kubectl label nodes k8s-worker3 infra=prod
 ```
 
-Existe uma funcionalidade, pouco documentada na documentação do kubernetes, que permite adicionar uma annotation específica em um namespace, de modo que os pods deployados nesse namespace fiquem automaticamente atrelados a nodes com um derminado label. Essa annotation é `scheduler.alpha.kubernetes.io/node-selector: <chave>=<valor>`, onde `<chave>=<valor>` é o label dos nodes escolhidos. Um exemplo concreto, adicionando a annotation nos namespaces `esocial-prod` e `esocial-hmg`:
+Existe uma funcionalidade, pouco documentada na documentação do kubernetes, que permite adicionar uma annotation específica em um namespace, de modo que os pods deployados nesse namespace fiquem automaticamente atrelados a nodes com um derminado label. Essa annotation é `scheduler.alpha.kubernetes.io/node-selector: <chave>=<valor>`, onde `<chave>=<valor>` é o label dos nodes escolhidos. Um exemplo concreto, adicionando a annotation nos namespaces `esocial-producao` e `esocial-homologacao`:
 
 Exemplo real:
 ```shell
