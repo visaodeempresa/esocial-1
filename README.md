@@ -112,3 +112,11 @@ kubectl annotate namespaces esocial-producao scheduler.alpha.kubernetes.io/node-
 kubectl annotate namespaces esocial-homologacao scheduler.alpha.kubernetes.io/node-selector=infra=hmg
 ```
 Essa configuração só precisa ser feita uma vez.
+
+
+```sequence
+Alice->Bob: Hello Bob, how are you?
+Note right of Bob: Bob thinks
+Bob-->Alice: I am good thanks!
+```
+
